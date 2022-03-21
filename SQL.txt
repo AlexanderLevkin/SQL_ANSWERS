@@ -1,0 +1,79 @@
+Exercise: 10. Find the printer models having the highest price. Result set: model, price.
+Answer : SELECT model, price
+FROM Printer
+WHERE price = (SELECT MAX(price)
+FROM printer) ;
+
+
+Exercise: 11. Find out the average speed of PCs.
+Answer : SELECT AVG(speed) 
+FROM PC ; 
+
+
+Exercise: 12. Find out the average speed of the laptops priced over $1000.
+Answer :  SELECT AVG(speed)
+FROM Laptop
+WHERE price >1000 ;
+
+
+Exercise: 13. Find out the average speed of the PCs produced by maker A.
+Answer : SELECT AVG(PC.speed)
+FROM PC, Product
+WHERE PC.model=Product.model AND Product.maker='A' ;
+
+
+Exercise: 14. For the ships in the Ships table that have at least 10 guns, get the class, name, and country.
+Answer : SELECT Ships.class, Ships.name, Classes.country
+FROM ships LEFT OUTER JOIN classes ON Ships.class = Classes.class
+WHERE Classes.numGuns >= 10 ;
+
+
+Exercise: 15. Get hard drive capacities that are identical for two or more PCs.
+Result set: hd.
+Answer : SELECT hd 
+FROM PC
+GROUP BY hd
+HAVING COUNT(model) >= 2 ;
+
+
+Exercise: 16. Get pairs of PC models with identical speeds and the same RAM capacity. Each resulting pair should be displayed only once, i.e. (i, j) but not (j, i).
+Result set: model with the bigger number, model with the smaller number, speed, and RAM.
+Answer : SELECT DISTINCT a.model, b.model, a.speed, a.ram 
+FROM pc a, pc b 
+WHERE a.speed = b.speed AND a.ram = b.ram and a.model > b.model ;
+
+
+Exercise: 17. Get the laptop models that have a speed smaller than the speed of any PC.
+Result set: type, model, speed.
+Answer : SELECT DISTINCT p.type,p.model,l.speed
+FROM laptop l
+JOIN product p ON l.model=p.model
+WHERE l.speed<(select min(speed) from pc) ;
+
+
+Exercise: 18. Find the makers of the cheapest color printers.
+Result set: maker, price.
+Answer : SELECT DISTINCT maker, price 
+FROM printer, product
+WHERE printer.model = product.model AND color = 'y' AND price = (
+SELECT MIN (price) 
+FROM printer 
+WHERE color = 'y') ;
+
+
+Exercise: 19. For each maker having models in the Laptop table, find out the average screen size of the laptops he produces.
+Result set: maker, average screen size.
+Answer : SELECT product.maker, AVG(screen)
+FROM laptop LEFT OUTER JOIN product ON product.model = laptop.model
+GROUP BY product.maker ;
+
+
+Exercise: 20. Find the makers producing at least three distinct models of PCs.
+Result set: maker, number of PC models.
+Answer : SELECT maker, COUNT(model)
+FROM product
+WHERE type = 'pc'
+GROUP BY product.maker
+HAVING COUNT (DISTINCT model) >= 3 ;
+
+
